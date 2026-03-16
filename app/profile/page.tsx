@@ -1,19 +1,16 @@
 import { redirect } from "next/navigation";
-import { headers } from "next/headers";
-import { authClient } from "@/app/_lib/auth-client";
+import Link from "next/link";
+import { getSession } from "@/app/_lib/auth-api";
 import { getUserTrainData, getHomeData } from "@/app/_lib/api/fetch-generated";
 import dayjs from "dayjs";
 import { BottomNav } from "@/app/_components/bottom-nav";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import { Weight, Ruler, BicepsFlexed, User } from "lucide-react";
 import { LogoutButton } from "./_components/logout-button";
 
 export default async function ProfilePage() {
-  const session = await authClient.getSession({
-    fetchOptions: {
-      headers: await headers(),
-    },
-  });
+  const session = await getSession();
 
   if (!session.data?.user) redirect("/auth");
 
@@ -29,7 +26,6 @@ export default async function ProfilePage() {
   const needsOnboarding =
     (homeData.status === 200 && !homeData.data.activeWorkoutPlanId) ||
     !trainData.data;
-  if (needsOnboarding) redirect("/onboarding");
 
   const user = session.data.user;
   const data = trainData.data;
@@ -64,11 +60,22 @@ export default async function ProfilePage() {
                 {user.name}
               </h1>
               <p className="font-heading text-sm leading-[1.15] text-foreground/70">
-                Plano Basico
+                {data ? "Plano Básico" : "Sem dados de treino"}
               </p>
             </div>
           </div>
         </div>
+
+        {needsOnboarding && (
+          <div className="mb-4 w-full rounded-xl border border-primary/20 bg-primary/5 p-4">
+            <p className="font-heading text-sm text-foreground">
+              Configure seu perfil e plano para acompanhar sua evolução.
+            </p>
+            <Button asChild size="sm" className="mt-2">
+              <Link href="/onboarding">Configurar agora</Link>
+            </Button>
+          </div>
+        )}
 
         <div className="grid w-full grid-cols-2 gap-3">
           <div className="flex flex-col items-center gap-5 rounded-xl bg-primary/8 p-5">

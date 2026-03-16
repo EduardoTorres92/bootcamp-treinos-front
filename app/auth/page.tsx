@@ -1,15 +1,10 @@
 import Image from "next/image";
 import { redirect } from "next/navigation";
-import { authClient } from "@/app/_lib/auth-client";
-import { headers } from "next/headers";
-import { SignInWithGoogle } from "./_components/sign-in-with-google";
+import { getSession } from "@/app/_lib/auth-api";
+import { LoginForm } from "./_components/login-form";
 
 export default async function AuthPage() {
-  const session = await authClient.getSession({
-    fetchOptions: {
-      headers: await headers(),
-    },
-  });
+  const session = await getSession();
 
   if (session.data?.user) redirect("/");
 
@@ -37,7 +32,7 @@ export default async function AuthPage() {
             O app que vai transformar a forma como você treina.
           </h1>
 
-          <SignInWithGoogle />
+          <LoginForm />
         </div>
 
         <p className="font-heading text-xs leading-[1.4] text-primary-foreground/70">

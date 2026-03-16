@@ -34,9 +34,13 @@ export function Chat({ embedded = false, initialMessage }: ChatProps) {
     chat_initial_message: parseAsString,
   });
 
-  const { messages, sendMessage, status } = useChat({
+  const { messages, sendMessage, status, error } = useChat({
     transport: new DefaultChatTransport({
-      api: `${process.env.NEXT_PUBLIC_API_URL}/ai`,
+      // No browser: mesma origem para o cookie de sessão; no server: URL completa
+      api:
+        typeof window !== "undefined"
+          ? "/api/backend/ai"
+          : `${process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8081"}/ai`,
       credentials: "include",
     }),
   });
@@ -140,6 +144,13 @@ export function Chat({ embedded = false, initialMessage }: ChatProps) {
       </div>
 
       <div className="flex-1 overflow-y-auto pb-5">
+        {error && (
+          <div className="mx-5 mt-3 rounded-lg border border-destructive/50 bg-destructive/10 px-4 py-3">
+            <p className="font-heading text-sm text-destructive">
+              Erro ao falar com a IA: {error.message}
+            </p>
+          </div>
+        )}
         {messages.map((message) => (
           <div
             key={message.id}

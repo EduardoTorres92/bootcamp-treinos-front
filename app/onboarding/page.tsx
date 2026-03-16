@@ -1,16 +1,11 @@
 import { redirect } from "next/navigation";
-import { authClient } from "@/app/_lib/auth-client";
-import { headers } from "next/headers";
+import { getSession } from "@/app/_lib/auth-api";
 import { getHomeData, getUserTrainData } from "@/app/_lib/api/fetch-generated";
 import dayjs from "dayjs";
 import { Chat } from "@/app/_components/chat";
 
 export default async function OnboardingPage() {
-  const session = await authClient.getSession({
-    fetchOptions: {
-      headers: await headers(),
-    },
-  });
+  const session = await getSession();
 
   if (!session.data?.user) redirect("/auth");
 

@@ -1,10 +1,11 @@
 import { redirect } from "next/navigation";
-import { authClient } from "@/app/_lib/auth-client";
-import { headers } from "next/headers";
+import Link from "next/link";
+import { getSession } from "@/app/_lib/auth-api";
 import { getStats, getHomeData, getUserTrainData } from "@/app/_lib/api/fetch-generated";
 import dayjs from "dayjs";
 import { CircleCheck, CirclePercent, Hourglass } from "lucide-react";
 import { BottomNav } from "@/app/_components/bottom-nav";
+import { Button } from "@/components/ui/button";
 import { StreakBanner } from "./_components/streak-banner";
 import { StatsHeatmap } from "./_components/stats-heatmap";
 import { StatCard } from "./_components/stat-card";
@@ -16,11 +17,7 @@ function formatTotalTime(totalSeconds: number): string {
 }
 
 export default async function StatsPage() {
-  const session = await authClient.getSession({
-    fetchOptions: {
-      headers: await headers(),
-    },
-  });
+  const session = await getSession();
 
   if (!session.data?.user) redirect("/auth");
 
@@ -37,10 +34,30 @@ export default async function StatsPage() {
   const needsOnboarding =
     (homeData.status === 200 && !homeData.data.activeWorkoutPlanId) ||
     (trainData.status === 200 && !trainData.data);
-  if (needsOnboarding) redirect("/onboarding");
 
-  if (statsResponse.status !== 200) {
-    throw new Error("Failed to fetch stats");
+  // Sem onboarding: mostra página vazia (sem redirecionar)
+  if (needsOnboarding || statsResponse.status !== 200) {
+    return (
+      <div className="flex min-h-svh flex-col bg-background pb-24">
+        <div className="flex h-14 items-center px-5">
+          <p
+            className="text-[22px] uppercase leading-[1.15] text-foreground"
+            style={{ fontFamily: "var(--font-anton)" }}
+          >
+            Fit.ai
+          </p>
+        </div>
+        <div className="flex flex-1 flex-col items-center justify-center gap-4 px-5 py-10">
+          <p className="font-heading text-center text-muted-foreground">
+            Configure seu perfil e plano para ver suas estatísticas.
+          </p>
+          <Button asChild variant="outline">
+            <Link href="/onboarding">Configurar</Link>
+          </Button>
+        </div>
+        <BottomNav activePage="stats" />
+      </div>
+    );
   }
 
   const {

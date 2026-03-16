@@ -1,6 +1,5 @@
 import { redirect } from "next/navigation";
-import { authClient } from "@/app/_lib/auth-client";
-import { headers } from "next/headers";
+import { getSession } from "@/app/_lib/auth-api";
 import { getWorkoutDay, getHomeData, getUserTrainData } from "@/app/_lib/api/fetch-generated";
 import dayjs from "dayjs";
 import Image from "next/image";
@@ -37,11 +36,7 @@ export default async function WorkoutDayPage({
 }: {
   params: Promise<{ id: string; dayId: string }>;
 }) {
-  const session = await authClient.getSession({
-    fetchOptions: {
-      headers: await headers(),
-    },
-  });
+  const session = await getSession();
 
   if (!session.data?.user) redirect("/auth");
 

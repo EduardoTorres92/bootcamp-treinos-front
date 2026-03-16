@@ -2,21 +2,16 @@
 
 import { useRouter } from "next/navigation";
 import { LogOut } from "lucide-react";
-import { authClient } from "@/app/_lib/auth-client";
+import { logout } from "@/app/_lib/auth-api";
 import { Button } from "@/components/ui/button";
 
 export function LogoutButton() {
   const router = useRouter();
 
   const handleLogout = async () => {
-    const { error } = await authClient.signOut();
-
-    if (error) {
-      console.error(error.message);
-      return;
-    }
-
+    await logout();
     router.push("/auth");
+    router.refresh();
   };
 
   return (
