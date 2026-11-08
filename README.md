@@ -1,36 +1,34 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Bootcamp Treinos · App
 
-## Getting Started
+Interface de um app de treinos com **personal trainer por IA**: o usuário conversa com a IA, recebe um plano semanal personalizado, registra os treinos e acompanha a evolução. Consome a API [bootcamp-treinos-api](https://github.com/EduardoTorres92/bootcamp-treinos-api).
 
-First, run the development server:
+> Projeto desenvolvido durante um bootcamp de desenvolvimento full stack.
+
+## Telas
+
+- **Login e cadastro**: e-mail e senha, com validação de formulário.
+- **Onboarding com IA**: chat em streaming que coleta peso, altura, idade e % de gordura e monta o plano.
+- **Início**: treino do dia e acompanhamento de consistência da semana.
+- **Plano de treino**: dias da semana, dias de descanso e exercícios de cada dia, com botões de iniciar e concluir treino.
+- **Estatísticas**: sequência atual, mapa de calor de consistência e cartões de resumo.
+- **Perfil**: dados físicos e saída da conta.
+
+## Tecnologias
+
+Next.js (App Router) · React · TypeScript · Tailwind CSS · shadcn/ui · Vercel AI SDK (`useChat`) · React Hook Form + Zod · nuqs · Orval (cliente da API gerado a partir do OpenAPI)
+
+## Destaques técnicos
+
+- Cliente HTTP **gerado automaticamente** com Orval a partir da documentação OpenAPI da API, com tipos de ponta a ponta.
+- **Proxy** em `app/api/backend` para o chat com a IA, mantendo a sessão por cookie.
+- Server Actions para iniciar e concluir sessões de treino.
+
+## Rodar localmente
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+pnpm install
+# .env.local: NEXT_PUBLIC_API_URL=http://localhost:8081
+pnpm dev   # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+A API precisa estar rodando (veja o repositório da API).
